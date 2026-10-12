@@ -32,7 +32,7 @@ import click
 import paho.mqtt.client as mqtt
 from pywcmp.bundle import WIS2_TOPIC_HIERARCHY_DIR
 from pywis_pubsub import cli_options
-from pywiscat.wis2.metrics import (
+from pywmocat.wis2_gdc2.metrics import (
     analyze_data_policy, analyze_earth_system_discipline, analyze_kpi
 )
 
