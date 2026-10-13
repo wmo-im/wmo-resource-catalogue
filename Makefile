@@ -33,6 +33,10 @@ force-build:
 up:
 	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
 
+traefik:
+	cp -f docker-compose.traefik.yml docker-compose.override.yml
+	docker compose $(DOCKER_COMPOSE_ARGS) up --detach
+
 down:
 	docker compose $(DOCKER_COMPOSE_ARGS) down
 
@@ -49,6 +53,7 @@ logs:
 	docker compose $(DOCKER_COMPOSE_ARGS) logs --follow
 
 clean:
+	git checkout docker-compose.override.yml
 	docker system prune -f
 	docker volume prune -f
 

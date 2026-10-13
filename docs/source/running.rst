@@ -129,3 +129,16 @@ MQTT
 .. note::
 
    It is strongly recommended to run services using TLS/SSL to offer HTTPS and MQTTS
+
+Traefik
+-------
+
+By default, wmo-resource-catalogue does not assume public services and does not provide a web proxy.  `Traefik`_ is an application proxy that also configures HTTPS and TLS.
+
+To use wmo-resource-catalogue with Traefik:
+
+* edit ``docker-compose.traefik.yml``, replacing ``HOSTNAME`` with your desired hostname/DNS entry
+* set an environment variable named ``ACME_EMAIL`` with an email addreess (required for Let's Encrypt)
+* apply ``docker-compose.traefik.yml`` as part of ``docker compose up``.  A convenience target is available in ``Makefile`` via ``make traefik`` (use ``make clean`` to reset changes made by ``make traefik`` to the default setup)
+
+.. _`Traefik`: https://traefik.io/traefik

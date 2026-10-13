@@ -1,0 +1,54 @@
+services:
+  wmo-resource-catalogue-traefik:
+    image: traefik:v3
+    container_name: wmo-resource-catalogue-traefik
+    restart: unless-stopped
+    env_file:
+      - wmo-resource-catalogue.env
+    command:
+      - --api.dashboard=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=wmo-resource-catalogue-net
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-letsencrypt:/letsencrypt
+    networks:
+      - wmo-resource-catalogue-net
+
+  wmo-resource-catalogue-api:
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=wmo-resource-catalogue-net
+      - traefik.http.routers.catalogue-api.rule=Host(`HOSTNAME`)
+      - traefik.http.routers.catalogue-api.entrypoints=websecure
+      - traefik.http.routers.catalogue-api.tls=true
+      - traefik.http.routers.catalogue-api.tls.certresolver=le
+      - traefik.http.services.catalogue-api.loadbalancer.server.port=8080
+
+  wmo-resource-catalogue-grafana:
+    environment:
+      - GF_SERVER_ROOT_URL=https://grafana.wmo-resource-catalogue.labs.wis2dev.io/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=false
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=wmo-resource-catalogue-net
+      - traefik.http.routers.catalogue-grafana.rule=Host(`grafana.HOSTNAME`)
+      - traefik.http.routers.catalogue-grafana.entrypoints=websecure
+      - traefik.http.routers.catalogue-grafana.tls=true
+      - traefik.http.routers.catalogue-grafana.tls.certresolver=le
+      - traefik.http.services.catalogue-grafana.loadbalancer.server.port=3000
+
+volumes:
+  wmo-resource-catalogue-traefik-letsencrypt:
