@@ -63,4 +63,4 @@ ps:
 rm:
 	docker volume rm $(shell docker volume ls --filter name=wmo-resource-catalogue -q)
 
-.PHONY: build build-management up login down restart reinit-backend force-build logs rm clean ps
+.PHONY: build build-management up traefik login down restart reinit-backend force-build logs rm clean ps
