@@ -10,6 +10,7 @@ services:
       - --providers.docker=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=wmo-resource-catalogue-net
+      - --entrypoints.mqtt.address=:8883
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -21,6 +22,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "8883:8883"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - wmo-resource-catalogue-traefik-letsencrypt:/letsencrypt
@@ -37,9 +39,24 @@ services:
       - traefik.http.routers.catalogue-api.tls.certresolver=le
       - traefik.http.services.catalogue-api.loadbalancer.server.port=8080
 
+  wmo-resource-catalogue-broker:
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=wmo-resource-catalogue-net
+      - traefik.tcp.routers.mqtt.rule=HostSNI(`HOSTNAME`)
+      - traefik.tcp.routers.mqtt.entrypoints=mqtt
+      - traefik.tcp.routers.mqtt.tls.certresolver=le
+      - traefik.tcp.services.mqtt.loadbalancer.server.port=1883
+
+      - traefik.http.routers.mqtt-ws.rule=Host(`HOSTNAME`) && PathPrefix(`/mqtt`)
+      - traefik.http.routers.mqtt-ws.entrypoints=websecure
+      - traefik.http.routers.mqtt-ws.tls=true
+      - traefik.http.routers.mqtt-ws.tls.certresolver=letsencrypt
+      - traefik.http.services.mqttws.loadbalancer.server.port=1884
+
   wmo-resource-catalogue-grafana:
     environment:
-      - GF_SERVER_ROOT_URL=https://grafana.wmo-resource-catalogue.labs.wis2dev.io/
+      - GF_SERVER_ROOT_URL=https://grafana.HOSTNAME/
       - GF_SERVER_SERVE_FROM_SUB_PATH=false
     labels:
       - traefik.enable=true
