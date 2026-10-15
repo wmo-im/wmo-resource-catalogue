@@ -177,7 +177,7 @@ class Registrar:
         failed_ets = False
 
         try:
-            ts = WMOCoreMetadataProfileTestSuite2(metadata)
+            ts = WMOCoreMetadataProfileTestSuite2(self.metadata)
             ets_results = ts.run_tests(fail_on_schema_validation=True,
                                        relax_centre_id_checks=EXPERIMENTAL)
         except ValueError as err:

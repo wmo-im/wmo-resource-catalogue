@@ -144,9 +144,13 @@ class Registrar:
                 LOGGER.warning(err)
                 return
 
-        # FIXME: bypassing centre-id detection until centre-id
+        # FIXME: fix centre-id to WIGOS_GOFC_CENTRE_ID until centre-id
         # workflow is established
-        self.centre_id = topic.split('/')[3]
+        try:
+            self.centre_id = topic.split('/')[3]
+        except AttributeError:
+            self.centre_id = WIGOS_GOFC_CENTRE_ID
+
         # self.centre_id = self.metadata['id'].split('-')[3]
         publish_report_topic = f'monitor/a/wigos/{self.centre_id}'
 
@@ -179,7 +183,7 @@ class Registrar:
         failed_ets = False
 
         try:
-            ts = WMDR2TestSuite(metadata)
+            ts = WMDR2TestSuite(self.metadata)
             ets_results = ts.run_tests()
         except ValueError as err:
             LOGGER.info('Validation errors; metadata not published')
