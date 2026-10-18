@@ -19,13 +19,13 @@ jobs:
         image: [ {tag: 'wmo-resource-catalogue-broker', build: 'wmo-resource-catalogue-broker'}, {tag: 'wmo-resource-catalogue-metrics-collector', build: 'wmo-resource-catalogue-monitoring/metrics-collector'}, {tag: 'wmo-resource-catalogue-management', build: 'wmo-resource-catalogue-management'}, {tag: 'wmo-resource-catalogue-api', build: 'wmo-resource-catalogue-api'} ]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Build docker image ${{ matrix.image.tag }}
         run: |
           docker build -t ${{ matrix.image.tag }}:test ${{ matrix.image.build }}
       - name: Run Trivy vulnerability scanner on ${{ matrix.image.tag }}
         if: always()
-        uses: aquasecurity/trivy-action@v0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         env:
           TRIVY_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-db:2
           TRIVY_JAVA_DB_REPOSITORY: public.ecr.aws/aquasecurity/trivy-java-db:1

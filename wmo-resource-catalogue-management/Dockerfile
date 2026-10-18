@@ -37,6 +37,7 @@ ENV PATH=$PATH:/venv/bin
 COPY ./ /app
 
 RUN apt-get update -y && \
+    apt-get upgrade -y && \
     # install dependencies
     apt-get install -y ${DEBIAN_PACKAGES} && \
     python3 -m venv --system-site-packages /venv && \
@@ -46,14 +47,16 @@ RUN apt-get update -y && \
     /venv/bin/pip3 install -e ".[backend]" && \
     chmod +x /app/docker/entrypoint.sh && \
     # cleanup
+    apt-get purge -y linux-libc-dev && \
     apt autoremove -y && \
     apt-get -q clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Supercronic for job management
-RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.49/supercronic-linux-amd64" && \
+RUN curl -fsSLO "https://github.com/aptible/supercronic/releases/download/v0.2.50/supercronic-linux-amd64" && \
     chmod +x supercronic-linux-amd64 && \
-    mv supercronic-linux-amd64 /usr/local/bin/supercronic
+    mv supercronic-linux-amd64 /usr/local/bin/supercronic && \
+    rm -f /usr/bin/pebble
 
 RUN useradd -u 1001 -g 0 wmo-resource-catalogue && \
     chgrp -R 0 /app && \
