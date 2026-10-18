@@ -27,12 +27,18 @@ COPY ./requirements.txt /app/requirements.txt
 RUN apk update && \
     apk upgrade --no-cache && \
     apk add --no-cache curl unzip && \
-    rm -rf /var/cache/apk/* && \
+    pip3 install -U pip && \
     pip3 install -r /app/requirements.txt && \
     mkdir -p /data && \
     cd /data && \
     curl -O https://wmo-im.github.io/wis2-topic-hierarchy/wth-bundle.zip && \
-    unzip wth-bundle.zip
+    unzip wth-bundle.zip && \
+    apk del unzip && \
+    rm -rf /usr/local/lib/python3.*/ensurepip \
+    && rm -rf /usr/local/lib/python3.*/site-packages/pip \
+    && rm -rf /usr/local/lib/python3.*/site-packages/pip-*.dist-info \
+    && rm -rf /root/.cache/pip \
+    && rm -rf /var/cache/apk/*
 
 ENV WMO_RESOURCE_CATALOGUE_CENTRE_ID_CSV="/data/centre-id.csv"
 ENV PYTHONUNBUFFERED="true"

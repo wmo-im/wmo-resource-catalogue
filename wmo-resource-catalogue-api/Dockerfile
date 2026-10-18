@@ -29,7 +29,9 @@ ENV WMO_RESOURCE_CATALOGUE_WIS2_GDC_METADATA_ARCHIVE_ZIPFILE=/data/wis2-discover
 ENV WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_METADATA_ARCHIVE_ZIPFILE=/data/wigos-observing-facility-metadata-archive.zip
 
 RUN apt-get update && \
-    apt-get install -y curl
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY ./app.py /pygeoapi/pygeoapi/app.py
 COPY ./pygeoapi_provider_elasticsearch_2025-03-30.py /pygeoapi/pygeoapi/provider/elasticsearch_.py
@@ -43,6 +45,7 @@ COPY ./templates/collections/items/item.html /pygeoapi/pygeoapi/templates/collec
 
 RUN /venv/bin/pip3 install -r /app/docker/wmo-resource-catalogue-api/requirements.txt && \
     /venv/bin/pip3 install "gunicorn<24" && \
+    /venv/bin/pip3 install "fsspec>=2026.6.0" && \
     /venv/bin/pywcmp bundle sync && \
     /venv/bin/pywmdr bundle sync && \
     cp -rp /root/.pywcmp / && \
