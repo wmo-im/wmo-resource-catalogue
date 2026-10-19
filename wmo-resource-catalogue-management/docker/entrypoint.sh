@@ -24,20 +24,24 @@
 
 echo "START /entrypoint.sh"
 
-echo "Caching schemas and codelists bundle"
+echo "Caching WTH, WNM and WME schemas and codelists bundle"
 /venv/bin/pywis-pubsub bundle sync
 
-echo "Caching WCMP schemas"
-/venv/bin/pywcmp bundle sync
+if [[ "${WMO_RESOURCE_CATALOGUE_WIS2_GDC_ENABLED}" == "true" ]]; then
+    echo "WIS2 GDC enabled"
+    echo "Caching WCMP schemas"
+    /venv/bin/pywcmp bundle sync
+    echo "Setting up WIS2 GDC discovery metadata disobackend"
+    /venv/bin/wmo-resource-catalogue wis2-gdc setup -y
+fi
 
-echo "Caching WMDR schemas"
-/venv/bin/pywmdr bundle sync
-
-echo "Setting up WIS2 GDC discovery metadata disobackend"
-/venv/bin/wmo-resource-catalogue wis2-gdc setup -y
-
-echo "Setting up WIGOS GOFC observing facility metadata backend"
-/venv/bin/wmo-resource-catalogue wigos-gofc setup -y
+if [[ "${WMO_RESOURCE_CATALOGUE_WIGOS_GOFC_ENABLED}" == "true" ]]; then
+    echo "WIGOS GOFC enabled"
+    echo "Caching WMDR schemas"
+    /venv/bin/pywmdr bundle sync
+    echo "Setting up WIGOS GOFC observing facility metadata backend"
+    /venv/bin/wmo-resource-catalogue wigos-gofc setup -y
+fi
 
 echo "Starting cron"
 /usr/local/bin/supercronic /app/docker/wmo-resource-catalogue-management.cron &
