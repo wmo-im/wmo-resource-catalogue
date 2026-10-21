@@ -31,7 +31,7 @@ x-logging: &logging
 services:
   wmo-resource-catalogue-backend:
     container_name: wmo-resource-catalogue-backend
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.5
     restart: always
     environment:
       - discovery.type=single-node
