@@ -73,7 +73,7 @@ class ElasticsearchBackend(BaseBackend):
             'hosts': [url2],
             'retry_on_timeout': True,
             'max_retries': 10,
-            'timeout': 30
+            'request_timeout': 30
         }
 
         if self.url_parsed.username and self.url_parsed.password:

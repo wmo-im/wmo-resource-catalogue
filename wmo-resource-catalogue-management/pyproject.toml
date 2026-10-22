@@ -38,7 +38,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-backend = ["elasticsearch<9", "OWSLib"]
+backend = ["elasticsearch", "OWSLib"]
 dev = ["flake8"]
 docs = ["sphinx"]
 release = ["build", "twine", "wheel"]
