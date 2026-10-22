@@ -38,7 +38,7 @@ import uuid
 from elasticsearch import Elasticsearch, exceptions, helpers
 from pygeofilter.backends.elasticsearch import to_filter
 
-from elasticsearch.dsl import Search
+from elasticsearch_dsl import Search
 
 from pygeoapi.crs import crs_transform
 from pygeoapi.provider.base import (BaseProvider, ProviderConnectionError,
