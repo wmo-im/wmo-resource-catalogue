@@ -31,7 +31,7 @@ if [[ "${WMO_RESOURCE_CATALOGUE_WIS2_GDC_ENABLED}" == "true" ]]; then
     echo "WIS2 GDC enabled"
     echo "Caching WCMP schemas"
     /venv/bin/pywcmp bundle sync
-    echo "Setting up WIS2 GDC discovery metadata disobackend"
+    echo "Setting up WIS2 GDC discovery metadata backend"
     /venv/bin/wmo-resource-catalogue wis2-gdc setup -y
 fi
 

@@ -45,7 +45,8 @@ LOGGER = logging.getLogger(__name__)
 
 BACKEND_DEFS = {
     'connection': BACKEND_CONNECTION,
-    'collection': 'wigos-observing-facility-metadata'
+    'collection': 'wigos-observing-facility-metadata',
+    'settings_file': Path(__file__).resolve().parent.parent / 'resources' / 'wigos-gofc-es-settings.json'  # noqa
 }
 
 

@@ -46,7 +46,8 @@ LOGGER = logging.getLogger(__name__)
 
 BACKEND_DEFS = {
     'connection': BACKEND_CONNECTION,
-    'collection': 'wis2-discovery-metadata'
+    'collection': 'wis2-discovery-metadata',
+    'settings_file': Path(__file__).resolve().parent.parent / 'resources' / 'wis2-gdc-es-settings.json'  # noqa
 }
 
 

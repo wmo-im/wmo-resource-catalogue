@@ -21,7 +21,6 @@
 
 import json
 import logging
-from pathlib import Path
 from urllib.parse import urlparse
 
 from elasticsearch import Elasticsearch, NotFoundError
@@ -29,8 +28,6 @@ from elasticsearch import Elasticsearch, NotFoundError
 from wmo_resource_catalogue.backend.base import BaseBackend
 
 LOGGER = logging.getLogger(__name__)
-
-WIS2_GDC_ES_SETTINGS = Path(__file__).resolve().parent.parent / 'resources' / 'wis2-gdc-es-settings.json'  # noqa
 
 
 class ElasticsearchBackend(BaseBackend):
@@ -41,12 +38,9 @@ class ElasticsearchBackend(BaseBackend):
     def __init__(self, defs):
         super().__init__(defs)
 
-        # default index settings
-        with WIS2_GDC_ES_SETTINGS.open() as fh:
-            self.ES_SETTINGS = json.load(fh)
-
         self.index_name = self.defs.get('collection')
         self.url_parsed = urlparse(self.defs.get('connection'))
+        self.settings_file = self.defs.get('settings_file')
 
         url2 = f'{self.url_parsed.scheme}://{self.url_parsed.netloc}'
 
@@ -85,7 +79,15 @@ class ElasticsearchBackend(BaseBackend):
 
     def setup(self) -> None:
         LOGGER.debug(f'Creating index {self.index_name}')
-        self.es.indices.create(index=self.index_name, body=self.ES_SETTINGS)
+        create_args = {
+            'index': self.index_name,
+        }
+        if self.settings_file is not None:
+            LOGGER.debug(f'Settings defined: {self.settings_file}')
+            with self.settings_file.open() as fh:
+                create_args['body'] = json.load(fh)
+
+        self.es.indices.create(**create_args)
 
     def teardown(self) -> None:
         if self.es.indices.exists(index=self.index_name):
