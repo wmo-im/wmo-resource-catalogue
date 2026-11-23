@@ -94,9 +94,6 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <h4 class="modal-title" id="data-subscription-modal-label">{% trans %}Subscribe to data notifications{% endtrans %}</h4>
-                  <button type="button" class="btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#wis2downloader-command-modal">
-                    add to wis2downloader
-                  </button>
                 </div>
                 <div class="modal-body">
                   <ul>      
@@ -116,25 +113,6 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal fade" id="wis2downloader-command-modal" tabindex="-1" role="dialog" aria-labelledby="wis2downloader-command-modal-label" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title" id="wis2downloader-command-modal-label">{% trans %}wis2downloader command{% endtrans %} (<a href="https://github.com/World-Meteorological-Organization/wis2downloader" target="_blank">GitHub</a>)</h4>
-                </div>
-                <div class="modal-body">
-                  <pre id="wis2downloader-command">
-wis2downloader add-subscription --topic "{{ mqtt_links[0]['channel'] }}"
-                  </pre>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-success" data-bs-target="data-subscription-modal-label" data-bs-toggle="modal" onclick="copyToClipboard('wis2downloader-command')">Copy</button>
-                  <button type="button" class="btn btn-secondary" data-bs-target="data-subscription-modal-label" data-bs-toggle="modal">Close</button>
                 </div>
               </div>
             </div>
