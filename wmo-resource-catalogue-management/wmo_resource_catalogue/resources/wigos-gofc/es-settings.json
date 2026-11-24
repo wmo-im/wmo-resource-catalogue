@@ -180,6 +180,60 @@
                                         }
                                     }
                                 }
+                            },
+                            "configurations": {
+                                "properties": {
+                                    "observingMethod": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "text",
+                                                "fields": {
+                                                    "raw": {
+                                                        "type": "keyword",
+                                                        "ignore_above": 256
+                                                    }
+                                                }
+                                            },
+                                            "title": {
+                                                "type": "text",
+                                                "fields": {
+                                                    "raw": {
+                                                        "type": "keyword"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "instrument": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "text",
+                                                "fields": {
+                                                    "raw": {
+                                                        "type": "keyword",
+                                                        "ignore_above": 256
+                                                    }
+                                                }
+                                            },
+                                            "manufacturer": {
+                                                "type": "text",
+                                                "fields": {
+                                                    "raw": {
+                                                        "type": "keyword"
+                                                    }
+                                                }
+                                            },
+                                            "model": {
+                                                "type": "text",
+                                                "fields": {
+                                                    "raw": {
+                                                        "type": "keyword"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     },

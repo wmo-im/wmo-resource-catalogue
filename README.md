@@ -82,8 +82,8 @@ make force-build
 # start all containers
 make up
 
-# reinitialize backend
-make reinit-backend
+# reinitialize backends
+make reinit-backends
 
 # start all containers in dev mode
 make dev
