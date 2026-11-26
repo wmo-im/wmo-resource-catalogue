@@ -32,6 +32,7 @@ from pywmdr.wmdr2.ets import WMDR2TestSuite
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
 
+from wmo_resource_catalogue.activity_log import ActivityLog
 from wmo_resource_catalogue.backend import BACKENDS
 from wmo_resource_catalogue.env import (BACKEND_TYPE, BACKEND_CONNECTION,
                                         BROKER_URL,
@@ -63,6 +64,7 @@ class Registrar:
         self.source = None
         self.metadata = None
         self.backend = BACKENDS[BACKEND_TYPE](BACKEND_DEFS)
+        self.activity_log = ActivityLog()
 
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
@@ -119,6 +121,7 @@ class Registrar:
                            message, [self._get_link()])
         publish_report_topic = f'monitor/a/wigos/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
+        self.activity_log.publish(wme)
 
         return None
 
@@ -175,6 +178,7 @@ class Registrar:
                                    message, [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
+                self.activity_log.publish(wme)
 
                 return
 
@@ -240,6 +244,7 @@ class Registrar:
 
         LOGGER.info('Publishing metadata to backend')
         self._publish()
+        self.activity_log.publish(wme)
 
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
@@ -281,6 +286,7 @@ class Registrar:
                            severity, 'WIGOS GOFC WMDR2 deletion report',
                            message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
+        self.activity_log.publish(wme)
 
         return
 
@@ -366,8 +372,9 @@ def setup(ctx, force, bypass, verbosity='NOTSET'):
 def teardown(ctx, bypass, verbosity='NOTSET'):
     """Delete WIGOS GOFC backend"""
 
+    msg = 'Delete WIGOS GOFC backend?  This will remove all existing observing facility metadata'  # noqa
     if not bypass:
-        if not click.confirm('Delete WIGOS GOFC backend?  This will remove existing collections', abort=True):  # noqa
+        if not click.confirm(msg, abort=True):
             return
 
     backend = BACKENDS[BACKEND_TYPE](BACKEND_DEFS)

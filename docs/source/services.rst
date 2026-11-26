@@ -32,6 +32,8 @@ the following resources:
      - ``/collections/wigos-observing-facility-metadata``
    * - WMDR2 validation
      - ``/processes/pywmdr-wigos-wmdr2-ets/execution``
+   * - Activity Log
+     - ``/jobs``
 
 OpenAPI/Swagger
 ^^^^^^^^^^^^^^^
@@ -84,7 +86,7 @@ Equality queries
 Freetext search
 """""""""""""""
 
-- search metadata records for temperature: `q=temperature``
+- search metadata records for temperature: ``q=temperature``
 - search metadata records for GRIB2 data: ``q=GRIB2``
 - search metadata records for any GRIB data: ``q=\*GRIB*``
 - search metadata records for any GRIB data in Germany: ``q=*GRIB* AND germany``
@@ -118,7 +120,6 @@ The GDC API contains both real-time and non real-time data.  A typical WCMP2 dis
      "type": "application/geo+json",
      "title": "Data notifications"
    }
-
 
 .. note::
 
@@ -168,8 +169,18 @@ The WIGOS GOFC API allows for a wide range of query predicates to search for dat
 
 The WIGOS GOFC API can be searched via the ``/collections/wigos-observing-facility-metadata/items`` endpoint. This endpoint provides a number query parameters as described in the examples below.
 
+.. note::
 
-TODO: add examples
+   Spatial, temporal, freetext search queries, sorting/paging can be specified in the same manner as defined in WIS2 GDC.
+
+Equality queries
+""""""""""""""""
+
+- search for all fixed land observing facilities: ``facilityType.id=landFixed``
+- search for all observing facilities in WMO Region III (South America): ``wmoRegion.id=southAmerica``
+- search for all observing facilities in Norway: ``territories.territory.id=NOR``
+- search for all observing facilities affiliated with GBON ``observations.programAffiliations.programAffiliation.id=GBON``
+- search for all observing facilities measuring total column ozone: ``observations.observedProperty.id=263``
 
 Validation and quality assessment
 """""""""""""""""""""""""""""""""
@@ -181,6 +192,11 @@ The Swagger interface will provide a sample WMDR2 record as part of the JSON req
 .. image:: /_static/wmo-resource-catalogue-wigos-gofc-api-swagger-process-ets.png
    :width: 80%
    :alt: WMO Resource Catalogue API Swagger Process for WMDR2 validation
+
+Activity Log
+^^^^^^^^^^^^
+
+The Activity Log provides an audit trail/record of all transactions and reports and is available via ``/jobs``.
 
 Metrics
 -------
