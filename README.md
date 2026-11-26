@@ -8,7 +8,7 @@ wmo-resource-catalogue is a Reference Implementation of a WIS2 Global Discovery 
 
 ## Workflow
 
-- connects to a WIS2 Global Broker, subscribed to the following topic:
+- connects to a WIS2 Global Broker, subscribed to the following topics:
   - `cache/a/wis2/+/metadata`
   - `cache/a/wigos/+/metadata`
 - on discovery metadata and observing facility metadata notifications:

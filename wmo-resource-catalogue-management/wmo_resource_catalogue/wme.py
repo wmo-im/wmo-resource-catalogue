@@ -23,6 +23,8 @@ from datetime import datetime
 import logging
 import uuid
 
+from wmo_resource_catalogue.env import API_URL
+
 LOGGER = logging.getLogger(__name__)
 
 WME_DATA_SCHEMA = 'https://schemas.wmo.int/wme/1.0.0/schemas/wis2-event-message-bundled.json'  # noqa
@@ -45,13 +47,14 @@ def generate_wme(source: str, subject: str, type_: str, severity: str,
     """
 
     data['title'] = title
+    id_ = str(uuid.uuid4())
 
     message = {
         'specversion': '1.0',
         'type': f'int.wmo.wis.wme.event.{type_}',
         'source': source,
         'subject': subject,
-        'id': str(uuid.uuid4()),
+        'id': id_,
         'time': datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
         'datacontenttype': 'application/json',
         'dataschema': WME_DATA_SCHEMA,
@@ -60,7 +63,13 @@ def generate_wme(source: str, subject: str, type_: str, severity: str,
                 'http://wis.wmo.int/spec/wme/1/conf/monitoring-event-message-core'  # noqa
             ],
             'severity': severity,
-            'content': data
+            'content': data,
+            'links': [{
+                'rel': 'self',
+                'title': 'WMO Resource Catalogue Activity Log',
+                'type': 'application/json',
+                'href': f'{API_URL}/jobs/{id_}?f=json'
+            }]
         }
     }
 

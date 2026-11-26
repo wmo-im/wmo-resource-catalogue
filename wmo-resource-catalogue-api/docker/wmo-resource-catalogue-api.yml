@@ -17,8 +17,8 @@ server:
       url: https://tile.openstreetmap.org/{z}/{x}/{y}.png
       attribution: 'Map data &copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
     manager:
-        name: TinyDB
-        connection: /tmp/wmo-resource-catalogue-process-manager.db
+        name: Elasticsearch
+        connection: ${WMO_RESOURCE_CATALOGUE_BACKEND_CONNECTION:-http://wmo-resource-catalogue-backend:9200}/wmo-resource-catalogue-activity-log
         output_dir: /tmp/
 
 logging:

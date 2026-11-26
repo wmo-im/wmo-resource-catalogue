@@ -1,0 +1,104 @@
+{
+    "settings": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0
+    },
+    "mappings": {
+        "dynamic": false,
+        "properties": {
+            "id": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "created": {
+                "type": "date",
+                "null_value": "1850",
+                "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
+                "ignore_malformed": true
+            },
+            "started": {
+                "type": "date",
+                "null_value": "1850",
+                "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
+                "ignore_malformed": true
+            },
+            "finished": {
+                "type": "date",
+                "null_value": "1850",
+                "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
+                "ignore_malformed": true
+            },
+            "updated": {
+                "type": "date",
+                "null_value": "1850",
+                "format": "year||year_month||year_month_day||date_time||t_time||t_time_no_millis",
+                "ignore_malformed": true
+            },
+            "type": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "jobID": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "processID": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "status": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "progress": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "parameters": {
+                "type": "text",
+                "fields": {
+                    "raw": {
+                        "type": "keyword"
+                    }
+                }
+            },
+            "links": {
+                "type": "object",
+                "properties": {
+                    "channel": {
+                        "type": "text",
+                        "fields": {
+                            "raw": {
+                                "type": "keyword"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

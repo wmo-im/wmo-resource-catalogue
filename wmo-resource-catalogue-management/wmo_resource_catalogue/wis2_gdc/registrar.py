@@ -34,6 +34,7 @@ from pywcmp.wcmp2.kpi import WMOCoreMetadataProfileKeyPerformanceIndicators
 from pywis_pubsub import cli_options
 from pywis_pubsub.mqtt import MQTTPubSubClient
 
+from wmo_resource_catalogue.activity_log import ActivityLog
 from wmo_resource_catalogue.backend import BACKENDS
 from wmo_resource_catalogue.env import (BACKEND_TYPE, BACKEND_CONNECTION,
                                         BROKER_URL, EXPERIMENTAL, GB_LINKS,
@@ -64,6 +65,7 @@ class Registrar:
         self.source = None
         self.metadata = None
         self.backend = BACKENDS[BACKEND_TYPE](BACKEND_DEFS)
+        self.activity_log = ActivityLog()
 
         if PUBLISH_REPORTS:
             self.broker = MQTTPubSubClient(BROKER_URL)
@@ -120,6 +122,7 @@ class Registrar:
                            message, [self._get_link()])
         publish_report_topic = f'monitor/a/wis2/{centre_id}'
         self.broker.pub(publish_report_topic, json.dumps(wme))
+        self.activity_log.publish(wme)
 
         return None
 
@@ -158,7 +161,7 @@ class Registrar:
             LOGGER.debug(f'Topic centre-id: {incoming_topic_centre_id}')
             LOGGER.debug(f'Metadata centre-id {self.centre_id}')
 
-            if incoming_topic_centre_id != self.centre_id:
+            if incoming_topic_centre_id != self.centre_id and not EXPERIMENTAL:
                 LOGGER.warning('Topic mismatch')
                 message = {
                     'description': f'Topic mismatch ({incoming_topic_centre_id} != {self.centre_id})'  # noqa
@@ -169,6 +172,7 @@ class Registrar:
                                    message, [self._get_link()])
 
                 self.broker.pub(publish_report_topic, json.dumps(wme))
+                self.activity_log.publish(wme)
 
                 return
 
@@ -253,6 +257,8 @@ class Registrar:
                                    kpi_results)
                 self.broker.pub(publish_report_topic, json.dumps(wme))
 
+        self.activity_log.publish(wme)
+
     def delete_record(self, topic: str, wnm: dict) -> None:
         """
         Delete a metadata document
@@ -292,6 +298,7 @@ class Registrar:
         wme = generate_wme(WIS2_GDC_CENTRE_ID, centre_id, 'item.download',
                            severity, 'WIS2 GDC WCMP2 deletion report', message)
         self.broker.pub(publish_report_topic, json.dumps(wme))
+        self.activity_log.publish(wme)
 
         return
 
@@ -436,8 +443,10 @@ def setup(ctx, force, bypass, verbosity='NOTSET'):
 def teardown(ctx, bypass, verbosity='NOTSET'):
     """Delete WIS2 GDC backend"""
 
+    msg = 'Delete WIS2 GDC backend?  This will remove all existing discovery metadata records'  # noqa
+
     if not bypass:
-        if not click.confirm('Delete WIS2 GDC backend?  This will remove existing collections', abort=True):  # noqa
+        if not click.confirm(msg, abort=True):
             return
 
     backend = BACKENDS[BACKEND_TYPE](BACKEND_DEFS)
